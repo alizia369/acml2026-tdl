@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Topological Deep Learning Tutorial | ACML 2026, Melbourne</title>
+<meta name="description" content="A 150-minute in-person tutorial at ACML 2026 in Melbourne on topological deep learning: persistent homology, topology-aware losses and layers, higher-order neural networks, and applications.">
+<link rel="canonical" href="https://alizia369.github.io/acml2026-tdl/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Topological Deep Learning for Robust Representation Learning">
+<meta property="og:description" content="ACML 2026 tutorial, Melbourne, 1 December 2026. Foundations, architectures, and applications of topological deep learning.">
+<meta property="og:url" content="https://alizia369.github.io/acml2026-tdl/">
+<meta property="og:image" content="https://alizia369.github.io/acml2026-tdl/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#16212f">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"EducationEvent","name":"Topological Deep Learning for Robust Representation Learning: Foundations, Architectures, and Applications","startDate":"2026-12-01","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"ACML 2026","address":{"@type":"PostalAddress","addressLocality":"Melbourne","addressCountry":"AU"}},"superEvent":{"@type":"Event","name":"The 18th Asian Conference on Machine Learning (ACML 2026)","url":"https://www.acml-conf.org/2026/"},"performer":[{"@type":"Person","name":"Ali Zia","affiliation":"La Trobe University"},{"@type":"Person","name":"Abdelwahed Khamis","affiliation":"CSIRO Data61"}]}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Topological Deep Learning tutorial, ACML 2026: top of page">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><polygon points="16,5 27,25 5,25" fill="#8fc1ff" fill-opacity=".25" stroke="#8fc1ff" stroke-width="1.5"/><circle cx="16" cy="5" r="3" fill="#fff"/><circle cx="27" cy="25" r="3" fill="#fff"/><circle cx="5" cy="25" r="3" fill="#e8a317"/></svg>
+      <span>TDL tutorial at ACML 2026</span>
+    </a>
+    <nav aria-label="Sections">
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#programme">Programme</a></li>
+        <li><a href="#applications">Applications</a></li>
+        <li><a href="#presenters">Presenters</a></li>
+        <li><a href="#materials">Materials</a></li>
+        <li><a href="#reading">Reading</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <p class="hero-venue">Tutorial at the 18th Asian Conference on Machine Learning</p>
+      <h1>Topological Deep Learning for Robust Representation Learning</h1>
+      <p class="hero-sub">Foundations, architectures, and applications</p>
+      <dl class="facts">
+        <dt>When</dt><dd>Tuesday 1 December 2026, session time to be announced</dd>
+        <dt>Where</dt><dd>ACML 2026, Melbourne, Australia (in person)</dd>
+        <dt>Length</dt><dd>150 minutes</dd>
+        <dt>Presenters</dt><dd>Ali Zia (La Trobe University) and Abdelwahed Khamis (CSIRO Data61)</dd>
+      </dl>
+      <div class="actions">
+        <a class="btn btn-primary" href="#programme">See the programme</a>
+        <a class="btn btn-ghost" href="https://www.acml-conf.org/2026/">Register through ACML 2026</a>
+      </div>
+    </div>
+
+    <figure class="lab" aria-labelledby="lab-cap">
+      <svg id="complex" viewBox="0 0 560 350" role="img" aria-label="A point cloud containing two rings and a small cluster. Edges and triangles appear between nearby points as the scale increases."></svg>
+      <div class="lab-controls">
+        <button class="play" id="play" type="button" aria-pressed="false">Play</button>
+        <label for="eps">Scale ε = <b id="out-eps">0.00</b></label>
+        <input id="eps" type="range" min="0" max="1.75" step="0.01" value="0">
+      </div>
+      <p class="readout" aria-live="off">
+        <span><i class="key key-h0"></i>Connected components (β<sub>0</sub>): <b id="out-b0">26</b></span>
+        <span><i class="key key-h1"></i>Loops (β<sub>1</sub>): <b id="out-b1">0</b></span>
+      </p>
+      <svg id="barcode" viewBox="0 0 560 170" role="img" aria-label="Persistence barcode. Blue bars are connected components, amber bars are loops. Each bar spans the range of scales over which that feature exists."></svg>
+      <figcaption id="lab-cap">Persistent homology, the first idea in the tutorial. Grow a ball around every point and connect points whose balls meet. Components merge and loops open, then fill in. Each bar records how long a feature survives: the two longer amber bars are the two rings in the data, and the short one is noise. Drag the slider to explore.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= OVERVIEW ================= -->
+<section class="section" id="overview">
+  <div class="wrap">
+    <h2>What the tutorial covers</h2>
+    <p class="lede">Deep networks are very good at local and pairwise structure. Topology gives us tools for the rest: the shape, connectivity, and higher-order organisation of data and of the representations a model learns.</p>
+
+    <div class="two-col">
+      <div class="prose">
+        <p>Standard models can miss global structure, weak signals, and the properties of data that stay the same under noise, sampling variation, or domain shift. Topological methods measure exactly those properties, and over the past few years they have moved from an analysis tool applied after training to something that can sit inside the learning pipeline.</p>
+        <p>This tutorial introduces the foundations and current practice of topological deep learning. We start from persistent homology, filtrations, and persistence diagrams, then show how topological summaries become features, losses, and differentiable layers. From there we move to neural networks defined on graphs, simplicial and cellular complexes, hypergraphs, and sheaves.</p>
+        <p>We also spend time on the practical questions: when topology actually helps, how to combine it with a deep network, how to show that it contributed, and what still does not work. Examples come from visual recognition, hyperspectral imaging, biomedical analysis, and representation learning with foundation models.</p>
+      </div>
+
+      <aside class="outcomes" aria-labelledby="outcomes-h">
+        <h3 id="outcomes-h">By the end, you will be able to</h3>
+        <ul>
+          <li>Interpret persistence diagrams and related topological summaries.</li>
+          <li>Identify machine learning settings where topology is likely to be useful.</li>
+          <li>Compare topology-aware features, losses, layers, and architectures.</li>
+          <li>Design appropriate baselines and ablations for topology-based methods.</li>
+        </ul>
+        <h3>Who it is for</h3>
+        <p>Researchers, students, and practitioners with a general machine learning background. You do not need to have studied algebraic topology or topological data analysis. The emphasis is on intuition and computational meaning, not formal proof.</p>
+      </aside>
+    </div>
+
+    <figure class="figure">
+      <div class="figure-plate">
+        <svg viewBox="0 0 1000 230" role="img" aria-labelledby="fig2-t fig2-d">
+          <title id="fig2-t">From data to a topology-aware model</title>
+          <desc id="fig2-d">Five stages connected by arrows: data, filtration, persistence diagram, vector summary, and a deep model that uses the summary as a feature, a loss, or a layer.</desc>
+          <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4a5868"/></marker></defs>
+          <g stroke="#4a5868" stroke-width="1.5" marker-end="url(#arr)">
+            <line x1="172" y1="90" x2="212" y2="90"/><line x1="372" y1="90" x2="412" y2="90"/><line x1="572" y1="90" x2="612" y2="90"/><line x1="772" y1="90" x2="812" y2="90"/>
+          </g>
+          <!-- 1 data -->
+          <g fill="#17202b">
+            <circle cx="60" cy="60" r="4"/><circle cx="92" cy="42" r="4"/><circle cx="126" cy="56" r="4"/><circle cx="140" cy="92" r="4"/><circle cx="122" cy="128" r="4"/><circle cx="86" cy="140" r="4"/><circle cx="52" cy="120" r="4"/><circle cx="42" cy="88" r="4"/>
+          </g>
+          <!-- 2 filtration -->
+          <g transform="translate(200 0)">
+            <g fill="#2f4fc7" fill-opacity=".12"><circle cx="60" cy="60" r="22"/><circle cx="92" cy="42" r="22"/><circle cx="126" cy="56" r="22"/><circle cx="140" cy="92" r="22"/><circle cx="122" cy="128" r="22"/><circle cx="86" cy="140" r="22"/><circle cx="52" cy="120" r="22"/><circle cx="42" cy="88" r="22"/></g>
+            <polygon points="60,60 92,42 126,56 140,92 122,128 86,140 52,120 42,88" fill="none" stroke="#2f4fc7" stroke-width="1.8"/>
+            <g fill="#17202b"><circle cx="60" cy="60" r="4"/><circle cx="92" cy="42" r="4"/><circle cx="126" cy="56" r="4"/><circle cx="140" cy="92" r="4"/><circle cx="122" cy="128" r="4"/><circle cx="86" cy="140" r="4"/><circle cx="52" cy="120" r="4"/><circle cx="42" cy="88" r="4"/></g>
+          </g>
+          <!-- 3 persistence diagram -->
+          <g transform="translate(400 0)">
+            <line x1="40" y1="145" x2="150" y2="145" stroke="#17202b" stroke-width="1.5"/><line x1="40" y1="145" x2="40" y2="35" stroke="#17202b" stroke-width="1.5"/>
+            <line x1="40" y1="145" x2="145" y2="40" stroke="#9aa7b5" stroke-dasharray="4 3"/>
+            <g fill="#2f4fc7"><circle cx="40" cy="118" r="4"/><circle cx="40" cy="110" r="4"/><circle cx="40" cy="104" r="4"/><circle cx="40" cy="96" r="4"/></g>
+            <g fill="#e8a317" stroke="#8a5a00"><circle cx="72" cy="48" r="5.5"/><circle cx="96" cy="82" r="4"/><circle cx="110" cy="70" r="4"/></g>
+            <text x="95" y="162" font-size="12" fill="#4a5868" text-anchor="middle">birth</text>
+            <text x="28" y="90" font-size="12" fill="#4a5868" text-anchor="middle" transform="rotate(-90 28 90)">death</text>
+          </g>
+          <!-- 4 vector summary -->
+          <g transform="translate(640 36)">
+            <g fill="#2f4fc7">
+              <rect x="0" y="0" width="22" height="22" opacity=".1"/><rect x="24" y="0" width="22" height="22" opacity=".45"/><rect x="48" y="0" width="22" height="22" opacity=".3"/><rect x="72" y="0" width="22" height="22" opacity=".08"/>
+              <rect x="0" y="24" width="22" height="22" opacity=".3"/><rect x="24" y="24" width="22" height="22" opacity=".95"/><rect x="48" y="24" width="22" height="22" opacity=".55"/><rect x="72" y="24" width="22" height="22" opacity=".12"/>
+              <rect x="0" y="48" width="22" height="22" opacity=".15"/><rect x="24" y="48" width="22" height="22" opacity=".5"/><rect x="48" y="48" width="22" height="22" opacity=".4"/><rect x="72" y="48" width="22" height="22" opacity=".3"/>
+              <rect x="0" y="72" width="22" height="22" opacity=".06"/><rect x="24" y="72" width="22" height="22" opacity=".12"/><rect x="48" y="72" width="22" height="22" opacity=".25"/><rect x="72" y="72" width="22" height="22" opacity=".2"/>
+            </g>
+          </g>
+          <!-- 5 model -->
+          <g transform="translate(820 0)">
+            <g stroke="#9aa7b5" stroke-width="1">
+              <line x1="30" y1="55" x2="85" y2="45"/><line x1="30" y1="55" x2="85" y2="90"/><line x1="30" y1="55" x2="85" y2="135"/>
+              <line x1="30" y1="90" x2="85" y2="45"/><line x1="30" y1="90" x2="85" y2="90"/><line x1="30" y1="90" x2="85" y2="135"/>
+              <line x1="30" y1="125" x2="85" y2="45"/><line x1="30" y1="125" x2="85" y2="90"/><line x1="30" y1="125" x2="85" y2="135"/>
+              <line x1="85" y1="45" x2="140" y2="70"/><line x1="85" y1="90" x2="140" y2="70"/><line x1="85" y1="135" x2="140" y2="70"/>
+              <line x1="85" y1="45" x2="140" y2="110"/><line x1="85" y1="90" x2="140" y2="110"/><line x1="85" y1="135" x2="140" y2="110"/>
+            </g>
+            <g fill="#fff" stroke="#17202b" stroke-width="1.5"><circle cx="30" cy="55" r="7"/><circle cx="30" cy="90" r="7"/><circle cx="30" cy="125" r="7"/><circle cx="85" cy="45" r="7"/><circle cx="85" cy="90" r="7"/><circle cx="85" cy="135" r="7"/><circle cx="140" cy="70" r="7"/><circle cx="140" cy="110" r="7"/></g>
+            <circle cx="85" cy="90" r="7" fill="#e8a317" stroke="#8a5a00" stroke-width="1.5"/>
+          </g>
+          <g font-size="15" font-weight="600" fill="#17202b" text-anchor="middle">
+            <text x="92" y="192">Data</text><text x="292" y="192">Filtration</text><text x="492" y="192">Persistence diagram</text><text x="692" y="192">Vector summary</text><text x="905" y="192">Deep model</text>
+          </g>
+          <g font-size="13" fill="#4a5868" text-anchor="middle">
+            <text x="92" y="212">points, images, graphs</text><text x="292" y="212">structure at every scale</text><text x="492" y="212">what persists, and for how long</text><text x="692" y="212">landscapes, images</text><text x="905" y="212">feature, loss, or layer</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption><b>Figure 1.</b> The route the first half of the tutorial follows. A filtration turns data into a nested family of shapes, persistent homology summarises which features survive across scales, and the summary enters a network as an input feature, a regularising loss, or a differentiable layer.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= PROGRAMME ================= -->
+<section class="section section-mist" id="programme">
+  <div class="wrap">
+    <h2>Programme</h2>
+    <p class="lede">Six parts over two and a half hours, moving from intuition to foundations, architectures, applications, and open problems.</p>
+
+    <div class="ribbon" aria-hidden="true">
+      <span>15</span><span>20</span><span>20</span><span>20</span><span class="case">40</span><span>35</span>
+    </div>
+    <div class="ribbon-ends" aria-hidden="true"><span>Start</span><span>Minutes per part; applications and case studies take the largest share</span><span>2 h 30</span></div>
+
+    <ol class="schedule">
+      <li>
+        <div class="when"><b>0:00</b><span>15 minutes</span></div>
+        <div><h3>Motivation: why topology in machine learning?</h3>
+        <p>Local distances and pairwise graphs do not always capture global structure, holes, connectedness, representation collapse, domain shift, or weak signals. We introduce topology as a complementary tool for analysing and improving learned representations.</p></div>
+      </li>
+      <li>
+        <div class="when"><b>0:15</b><span>20 minutes</span></div>
+        <div><h3>Persistent homology for machine learning</h3>
+        <p>Point clouds, simplicial complexes, Vietoris–Rips and sublevel-set filtrations, barcodes, persistence diagrams, landscapes and images, stability, and interpretation.</p></div>
+      </li>
+      <li>
+        <div class="when"><b>0:35</b><span>20 minutes</span></div>
+        <div><h3>Topology in deep learning pipelines</h3>
+        <p>Topological summaries as features, topology-aware regularisation, differentiable topology layers, topology-preserving segmentation, and representation diagnostics, along with practical issues such as batching, scalability, differentiability, and ablations.</p></div>
+      </li>
+      <li>
+        <div class="when"><b>0:55</b><span>20 minutes</span></div>
+        <div><h3>From topological data analysis to topological deep learning</h3>
+        <p>Neural learning on graphs, simplicial complexes, cellular complexes, hypergraphs, and sheaves. We compare graph message passing with higher-order message passing and discuss when pairwise modelling is not enough.</p></div>
+      </li>
+      <li>
+        <div class="when"><b>1:15</b><span>40 minutes</span></div>
+        <div><h3>Applications and case studies</h3>
+        <p>Representative uses in computer vision, medical imaging, hyperspectral and remote sensing data, anomaly detection, molecular data, and robustness analysis. One case study shows how topology and geometry can diagnose out-of-distribution behaviour and weak-signal representations.</p></div>
+      </li>
+      <li>
+        <div class="when"><b>1:55</b><span>35 minutes</span></div>
+        <div><h3>Open challenges and discussion</h3>
+        <p>Scalability, differentiable topology, benchmark design, integration with foundation models, uncertainty, interpretability, and convincing evaluation protocols for topology-based machine learning.</p></div>
+      </li>
+    </ol>
+    <p class="note">Times are measured from the start of the session. The session slot and room will be added here once the ACML 2026 schedule is published.</p>
+
+    <figure class="figure">
+      <div class="figure-plate">
+        <svg viewBox="0 0 1000 235" role="img" aria-labelledby="fig3-t fig3-d">
+          <title id="fig3-t">Four domains for neural networks, drawn on the same six nodes</title>
+          <desc id="fig3-d">A graph with pairwise edges; a simplicial complex with two filled triangles; a cell complex with an additional four-sided cell; and a hypergraph in which three hyperedges group several nodes at once.</desc>
+          <defs>
+            <g id="nodes" fill="#17202b"><circle cx="30" cy="110" r="5"/><circle cx="80" cy="30" r="5"/><circle cx="150" cy="40" r="5"/><circle cx="185" cy="110" r="5"/><circle cx="120" cy="150" r="5"/><circle cx="100" cy="90" r="5"/></g>
+            <g id="edges" stroke="#17202b" stroke-width="1.6" fill="none"><path d="M30 110 L80 30 L150 40 L185 110 L120 150 L30 110 M80 30 L100 90 L150 40 M100 90 L120 150 M30 110 L100 90"/></g>
+          </defs>
+          <g transform="translate(25 12)"><use href="#edges"/><use href="#nodes"/></g>
+          <g transform="translate(275 12)">
+            <polygon points="30,110 80,30 100,90" fill="#2f4fc7" fill-opacity=".28"/><polygon points="80,30 150,40 100,90" fill="#2f4fc7" fill-opacity=".28"/>
+            <use href="#edges"/><use href="#nodes"/>
+          </g>
+          <g transform="translate(525 12)">
+            <polygon points="30,110 80,30 100,90" fill="#2f4fc7" fill-opacity=".28"/><polygon points="80,30 150,40 100,90" fill="#2f4fc7" fill-opacity=".28"/>
+            <polygon points="150,40 185,110 120,150 100,90" fill="#e8a317" fill-opacity=".45"/>
+            <use href="#edges"/><use href="#nodes"/>
+          </g>
+          <g transform="translate(775 12)">
+            <g stroke-linejoin="round" stroke-width="30">
+              <polygon points="30,110 80,30 100,90" fill="#2f4fc7" stroke="#2f4fc7" opacity=".22"/>
+              <polygon points="150,40 185,110 150,40" fill="#e8a317" stroke="#e8a317" opacity=".4"/>
+              <polygon points="100,90 120,150 185,110" fill="#17202b" stroke="#17202b" opacity=".12"/>
+            </g>
+            <use href="#nodes"/>
+          </g>
+          <g font-size="15" font-weight="600" fill="#17202b" text-anchor="middle">
+            <text x="132" y="200">Graph</text><text x="382" y="200">Simplicial complex</text><text x="632" y="200">Cell complex</text><text x="882" y="200">Hypergraph</text>
+          </g>
+          <g font-size="13" fill="#4a5868" text-anchor="middle">
+            <text x="132" y="220">pairwise relations only</text><text x="382" y="220">adds filled triangles</text><text x="632" y="220">adds cells of any shape</text><text x="882" y="220">groups of any size</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption><b>Figure 2.</b> The domains compared in part four. Message passing on a graph exchanges information along edges. Higher-order domains let a network pass messages between nodes, edges, faces, and groups, which matters when the signal lives in a relationship among several things at once.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= APPLICATIONS ================= -->
+<section class="section" id="applications">
+  <div class="wrap">
+    <h2>Where topology earns its place</h2>
+    <p class="lede">The longest part of the session looks at problems where connectivity and shape carry information that pixel-level or pairwise objectives miss.</p>
+
+    <div class="apps">
+      <article class="app">
+        <svg viewBox="0 0 240 150" role="img" aria-label="A branching structure with one broken branch circled.">
+          <g fill="none" stroke="#8fc1ff" stroke-width="5" stroke-linecap="round"><path d="M20 130 C60 110 80 90 110 80 C140 70 150 50 170 25"/><path d="M110 80 C140 92 165 96 182 104"/><path d="M200 112 C210 117 218 122 226 128"/><path d="M62 108 C58 85 50 65 36 45"/></g>
+          <circle cx="191" cy="108" r="15" fill="none" stroke="#e8a317" stroke-width="2.5" stroke-dasharray="5 4"/>
+        </svg>
+        <h3>Vision and medical imaging</h3>
+        <p>Vessels, roads, and cell boundaries must stay connected. Topology-aware losses penalise a broken branch that barely changes pixel accuracy.</p>
+      </article>
+      <article class="app">
+        <svg viewBox="0 0 240 150" role="img" aria-label="A stack of spectral image bands beside a spectrum curve with a small bump.">
+          <g stroke="#16212f" stroke-width="1.5"><polygon points="20,112 90,128 130,104 60,88" fill="#3a57c9"/><polygon points="20,94 90,110 130,86 60,70" fill="#5b7fe0"/><polygon points="20,76 90,92 130,68 60,52" fill="#8fc1ff"/><polygon points="20,58 90,74 130,50 60,34" fill="#f4be55"/></g>
+          <polyline points="148,110 160,92 170,96 180,60 188,72 196,70 201,50 206,70 216,76 228,48" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>
+          <circle cx="201" cy="50" r="9" fill="none" stroke="#e8a317" stroke-width="2.5"/>
+        </svg>
+        <h3>Hyperspectral and remote sensing</h3>
+        <p>Hundreds of bands, few labels, and faint targets. Topological summaries help separate weak but persistent signals from noise.</p>
+      </article>
+      <article class="app">
+        <svg viewBox="0 0 240 150" role="img" aria-label="A regular field of dots with one irregular region highlighted.">
+          <g fill="#8fc1ff" fill-opacity=".55">
+            <circle cx="30" cy="30" r="4"/><circle cx="60" cy="30" r="4"/><circle cx="90" cy="30" r="4"/><circle cx="120" cy="30" r="4"/><circle cx="150" cy="30" r="4"/><circle cx="180" cy="30" r="4"/><circle cx="210" cy="30" r="4"/>
+            <circle cx="30" cy="60" r="4"/><circle cx="60" cy="60" r="4"/><circle cx="90" cy="60" r="4"/><circle cx="120" cy="60" r="4"/><circle cx="210" cy="60" r="4"/>
+            <circle cx="30" cy="90" r="4"/><circle cx="60" cy="90" r="4"/><circle cx="90" cy="90" r="4"/><circle cx="120" cy="90" r="4"/><circle cx="210" cy="90" r="4"/>
+            <circle cx="30" cy="120" r="4"/><circle cx="60" cy="120" r="4"/><circle cx="90" cy="120" r="4"/><circle cx="120" cy="120" r="4"/><circle cx="150" cy="120" r="4"/><circle cx="180" cy="120" r="4"/><circle cx="210" cy="120" r="4"/>
+          </g>
+          <ellipse cx="165" cy="75" rx="34" ry="30" fill="#e8a317" fill-opacity=".18" stroke="#e8a317" stroke-width="2"/>
+          <g fill="#e8a317"><circle cx="152" cy="64" r="5"/><circle cx="178" cy="68" r="5"/><circle cx="160" cy="88" r="5"/><circle cx="181" cy="90" r="5"/></g>
+        </svg>
+        <h3>Anomaly detection and robustness</h3>
+        <p>Anomalies and distribution shift change the shape of a representation. Topology and geometry give diagnostics for detecting that change.</p>
+      </article>
+      <article class="app">
+        <svg viewBox="0 0 240 150" role="img" aria-label="A molecule drawn as two fused rings with side groups.">
+          <polygon points="70,45 105,30 140,45 140,90 105,108 70,90" fill="#8fc1ff" fill-opacity=".2"/>
+          <polygon points="140,45 176,54 186,90 140,90" fill="#e8a317" fill-opacity=".3"/>
+          <g stroke="#b9d6fb" stroke-width="2.2" fill="none"><polygon points="70,45 105,30 140,45 140,90 105,108 70,90"/><path d="M140 45 L176 54 L186 90 L140 90 M70 90 L40 112 M186 90 L212 116 M105 108 L105 135"/></g>
+          <g fill="#fff"><circle cx="70" cy="45" r="5.5"/><circle cx="105" cy="30" r="5.5"/><circle cx="140" cy="45" r="5.5"/><circle cx="140" cy="90" r="5.5"/><circle cx="105" cy="108" r="5.5"/><circle cx="70" cy="90" r="5.5"/><circle cx="176" cy="54" r="5.5"/><circle cx="186" cy="90" r="5.5"/></g>
+          <g fill="#e8a317"><circle cx="40" cy="112" r="5.5"/><circle cx="212" cy="116" r="5.5"/><circle cx="105" cy="135" r="5.5"/></g>
+        </svg>
+        <h3>Molecular and scientific data</h3>
+        <p>Rings, cavities, and functional groups are higher-order structures. Cell-complex and simplicial networks represent them directly.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRESENTERS ================= -->
+<section class="section section-mist" id="presenters">
+  <div class="wrap">
+    <h2>Presenters</h2>
+    <p class="lede">Both presenters work on topological and higher-order representation learning and its use in imaging and sensing.</p>
+    <div class="people">
+      <article class="person">
+        <!-- To use a photo: save a square image as assets/img/ali-zia.jpg and change the src below. -->
+        <img src="assets/img/ali-zia.svg" alt="" width="200" height="200">
+        <div>
+          <h3>Dr Ali Zia</h3>
+          <p class="role">Research Fellow, La Trobe University, Australia</p>
+          <p>Ali works across machine learning, computer vision, hyperspectral imaging, and topological representation learning. His work includes a field-level review of topological deep learning, topology-aware representation learning, robustness diagnostics, weak-signal detection, and scientific imaging applications.</p>
+          <p class="links"><a href="mailto:a.zia@latrobe.edu.au">a.zia@latrobe.edu.au</a><a href="https://www.ali-zia.me">ali-zia.me</a></p>
+        </div>
+      </article>
+      <article class="person">
+        <!-- To use a photo: save a square image as assets/img/abdelwahed-khamis.jpg and change the src below. -->
+        <img src="assets/img/abdelwahed-khamis.svg" alt="" width="200" height="200">
+        <div>
+          <h3>Dr Abdelwahed Khamis</h3>
+          <p class="role">Research Scientist, CSIRO Data61, Australia</p>
+          <p>Abdelwahed's research spans machine learning, optimal transport, multimodal sensing, radar perception, and higher-order representation learning.</p>
+          <p class="links"><a href="mailto:Abdelwahed.Khamis@data61.csiro.au">Abdelwahed.Khamis@data61.csiro.au</a></p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MATERIALS ================= -->
+<section class="section" id="materials">
+  <div class="wrap">
+    <h2>Materials</h2>
+    <p class="lede">Slides and supporting resources will be posted here before the tutorial.</p>
+    <div class="materials">
+      <article class="material">
+        <span class="status">Coming soon</span>
+        <h3>Slides</h3>
+        <p>The full slide deck, released ahead of the session so you can follow along.</p>
+      </article>
+      <article class="material">
+        <span class="status">Coming soon</span>
+        <h3>Worked examples</h3>
+        <p>Short examples that reproduce the figures and case studies shown in the session.</p>
+      </article>
+      <article class="material">
+        <h3>Software to explore now</h3>
+        <p><a href="https://github.com/pyt-team">TopoX</a> is an open-source suite of Python packages for learning on topological domains, described in reference 3 below.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= READING ================= -->
+<section class="section section-mist" id="reading">
+  <div class="wrap">
+    <h2>References covered</h2>
+    <p class="lede">The tutorial draws on these papers. The first is the most complete single starting point.</p>
+    <ol class="refs">
+      <li>Zia, A., Khamis, A., Nichols, J., Tayab, U. B., Hayder, Z., et al. <cite><a href="https://doi.org/10.1007/s10462-024-10710-9">Topological Deep Learning: A Review of an Emerging Paradigm</a>.</cite> <span class="venue">Artificial Intelligence Review, 57, 77, 2024.</span></li>
+      <li>Zia, A., Ali, U., Rehman, A., Ramzan, M. U., Han, K., Faheem, M., Qureshi, S., and Xiang, W. <cite>Learning Topology-Aware Representations via Test-Time Adaptation for Anomaly Segmentation.</cite> <span class="venue">IEEE Transactions on Pattern Analysis and Machine Intelligence, 2026, accepted.</span></li>
+      <li>Hajij, M., Papillon, M., Frantzen, F., Agerberg, J., AlJabea, I., Ballester, R., Zia, A., et al. <cite><a href="https://jmlr.org/papers/v25/24-0110.html">TopoX: A Suite of Python Packages for Machine Learning on Topological Domains</a>.</cite> <span class="venue">Journal of Machine Learning Research, 25(374), 1–8, 2024.</span></li>
+      <li>Papillon, M., Hajij, M., Myers, A., Jenne, H., Mathe, J., Papamarkou, T., Zia, A., et al. <cite><a href="https://arxiv.org/abs/2309.15188">ICML 2023 Topological Deep Learning Challenge: Design and Results</a>.</cite> <span class="venue">Topological, Algebraic and Geometric Learning Workshops, 2023.</span></li>
+      <li>Zia, A., Ali, U., Ramzan, M. U., Rehman, A., Khamis, A., and Xiang, W. <cite><a href="https://arxiv.org/abs/2601.20333">Test-Time Adaptation for Anomaly Segmentation via Topology-Aware Optimal Transport Chaining</a>.</cite> <span class="venue">arXiv:2601.20333, 2026.</span></li>
+      <li>Carlsson, G. <cite><a href="https://doi.org/10.1090/S0273-0979-09-01249-X">Topology and Data</a>.</cite> <span class="venue">Bulletin of the American Mathematical Society, 2009.</span></li>
+      <li>Hofer, C., Kwitt, R., Niethammer, M., and Uhl, A. <cite><a href="https://arxiv.org/abs/1707.04041">Deep Learning with Topological Signatures</a>.</cite> <span class="venue">NeurIPS, 2017.</span></li>
+      <li>Moor, M., Horn, M., Rieck, B., and Borgwardt, K. <cite><a href="https://proceedings.mlr.press/v119/moor20a.html">Topological Autoencoders</a>.</cite> <span class="venue">ICML, 2020.</span></li>
+      <li>Hajij, M., Zamzmi, G., Papamarkou, T., et al. <cite><a href="https://arxiv.org/abs/2206.00606">Topological Deep Learning: Going Beyond Graph Data</a>.</cite> <span class="venue">arXiv:2206.00606, 2023.</span></li>
+    </ol>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <p class="title">Topological Deep Learning for Robust Representation Learning</p>
+      <p>A tutorial at <a href="https://www.acml-conf.org/2026/">ACML 2026</a>, Melbourne, Tuesday 1 December 2026.</p>
+      <p>Questions about the tutorial: <a href="mailto:a.zia@latrobe.edu.au">a.zia@latrobe.edu.au</a></p>
+    </div>
+    <div>
+      <p>Related event</p>
+      <p><a href="https://alizia369.github.io/horl2026/">From Geometry to Topology: Frontiers of Higher-Order Representation Learning</a>, our NeurIPS 2026 workshop on higher-order representation learning.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/filtration.js"></script>
+</body>
+</html>
